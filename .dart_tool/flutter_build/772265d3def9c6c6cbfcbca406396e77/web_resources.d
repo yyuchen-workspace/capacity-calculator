@@ -1,1 +1,0 @@
- /Users/user/project/python/flutter/capacity_calculater/build/web/manifest.json:  /Users/user/project/python/flutter/capacity_calculater/web/index.html /Users/user/project/python/flutter/capacity_calculater/web/manifest.json
