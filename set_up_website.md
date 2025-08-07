@@ -13,7 +13,7 @@
 2. 點擊右上角的 `+` 按鈕，選擇 `New repository`
 3. 填寫 Repository 資訊：
    - **Repository name**: `capacity-calculator` (或您喜歡的名稱)
-   - **Description**: `樂得建議使用容量計算器 - Flutter Web App`
+   - **Description**: `建議使用容量計算器 - Flutter Web App`
    - **Public** (必須選擇 Public 才能使用免費的 GitHub Pages)
    - 勾選 `Add a README file`
 4. 點擊 `Create repository`
@@ -200,6 +200,42 @@ git push origin main
 - 檢查 base-href 設定是否與 repository 名稱一致
 - 確保所有檔案都已正確提交到 gh-pages 分支
 
+## ⚠️ 常見問題修正
+
+### 問題1: 網站顯示空白頁面
+**原因**: `base href` 設定錯誤
+**解決方案**:
+```bash
+# 編譯時必須指定正確的 base-href
+flutter build web --release --base-href="/repository-名稱/"
+
+# 例如：
+flutter build web --release --base-href="/capacity-calculator/"
+```
+
+**手動修正**:
+如果已經部署但發現空白，可以在 gh-pages 分支中手動修改 `index.html`:
+```html
+<!-- 錯誤 -->
+<base href="/">
+
+<!-- 正確 -->
+<base href="/capacity-calculator/">
+```
+
+### 問題2: CSS/JS 檔案載入失敗
+**原因**: 路徑錯誤，通常也是 base-href 問題
+**解決方案**: 同問題1的解決方案
+
+### 問題3: GitHub Pages 沒有更新
+**原因**: GitHub Pages 有快取機制
+**解決方案**:
+1. 等待 5-10 分鐘
+2. 強制重新整理頁面 (Ctrl+F5 或 Cmd+Shift+R)
+3. 清除瀏覽器快取
+
 ## 📞 完成！
 
 完成以上步驟後，您的 Flutter Web 容量計算器就會在 GitHub Pages 上線，任何人都可以透過網址存取使用！
+
+**實際部署網址**: https://yyuchen-workspace.github.io/capacity-calculator/

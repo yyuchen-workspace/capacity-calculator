@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '樂得建議使用容量計算器',
+      title: '建議使用容量計算器',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -359,7 +359,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: EdgeInsets.only(top: 4, bottom: 2),
+      padding: EdgeInsets.only(top: 2, bottom: 1),
       child: Text(
         title,
         style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
@@ -369,11 +369,11 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
 
   Widget _buildSectionCard({required Widget child, Color? color}) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
-      padding: EdgeInsets.all(12),
+      margin: EdgeInsets.only(bottom: 6),
+      padding: EdgeInsets.all(9),
       decoration: BoxDecoration(
         color: color ?? Colors.grey[50],
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(6),
         border: Border.all(color: Colors.grey[300]!, width: 0.5),
       ),
       child: child,
@@ -405,15 +405,15 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('樂得建議使用容量計算器', style: TextStyle(fontSize: 16)),
+        title: Text('建議使用容量計算器', style: TextStyle(fontSize: 16)),
         centerTitle: true,
-        toolbarHeight: 50,
+        toolbarHeight: 45,
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.all(7),
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 450),
+            constraints: BoxConstraints(maxWidth: 460),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -468,7 +468,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
                                   suffixText: 'GB',
                                   suffixStyle: TextStyle(fontSize: 11),
                                   isDense: true,
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 5),
                                   border: OutlineInputBorder(),
                                 ),
                               ),
@@ -490,7 +490,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
                     ],
                   ),
                   
-                  SizedBox(height: 8),
+                  SizedBox(height: 6),
                   
                   // PBX規格
                   Column(
@@ -542,7 +542,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
                     },
                   ),
 
-                  SizedBox(height: 8),
+                  SizedBox(height: 4),
 
                   // 話機數量
                   Column(
@@ -565,7 +565,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
                     ],
                   ),
 
-                  SizedBox(height: 8),
+                  SizedBox(height: 4),
 
                   // 錄音天數
                   Column(
@@ -616,7 +616,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
                     ],
                   ),
 
-                  SizedBox(height: 8),
+                  SizedBox(height: 4),
 
                   // 每月通話秒數
                   Column(
@@ -638,7 +638,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
                     ],
                   ),
 
-                  SizedBox(height: 8),
+                  SizedBox(height: 4),
 
                   // 錄音佔用容量
                   Column(
@@ -660,7 +660,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
                     ],
                   ),
 
-                  SizedBox(height: 8),
+                  SizedBox(height: 4),
 
                   // 建議使用硬碟容量大小
                   Column(
@@ -686,7 +686,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
             ),
 
             // 按鈕
-            SizedBox(height: 12),
+            SizedBox(height: 9),
             Row(
               children: [
                 Expanded(
@@ -694,17 +694,17 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
                     onPressed: _calculateResults,
                     child: Text('計算結果', style: TextStyle(fontSize: 13)),
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 8),
+                      padding: EdgeInsets.symmetric(vertical: 7),
                     ),
                   ),
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 7),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: _showCalculationProcess,
                     child: Text('顯示背景計算過程', style: TextStyle(fontSize: 13)),
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 8),
+                      padding: EdgeInsets.symmetric(vertical: 7),
                     ),
                   ),
                 ),

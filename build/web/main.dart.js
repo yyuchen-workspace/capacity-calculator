@@ -76230,7 +76230,7 @@ s=s[3]
 return Math.sqrt(r*r+q*q+p*p+s*s)}}
 A.H0.prototype={
 L(a){var s=null
-return new A.ws(new A.un(s),"\u6a02\u5f97\u5efa\u8b70\u4f7f\u7528\u5bb9\u91cf\u8a08\u7b97\u5668",A.r0(s,s,B.jq,s),s)}}
+return new A.ws(new A.un(s),"\u5efa\u8b70\u4f7f\u7528\u5bb9\u91cf\u8a08\u7b97\u5668",A.r0(s,s,B.jq,s),s)}}
 A.un.prototype={
 al(){var s=$.af(),r=t.N,q=t.z
 return new A.zz(new A.is(B.cc,s),new A.is(B.cc,s),new A.is(B.cc,s),new A.is(B.cc,s),new A.is(B.cc,s),new A.is(B.cc,s),new A.is(B.cc,s),A.ae(["10/60",A.ae(["concurrent",10,"extensions",60,"dataArea",4],r,q),"20/120",A.ae(["concurrent",20,"extensions",120,"dataArea",4],r,q),"30/240",A.ae(["concurrent",30,"extensions",240,"dataArea",6],r,q),"30/500",A.ae(["concurrent",30,"extensions",500,"dataArea",6],r,q),"30/1000",A.ae(["concurrent",30,"extensions",1000,"dataArea",8],r,q)],r,t.a))}}
@@ -76350,13 +76350,13 @@ k.push(A.c8(l,new A.q(!0,B.HK,l,l,l,l,l,B.ft,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l
 q=n+o[0].length}if(q<a.length)k.push(A.c8(l,l,B.d.es(a,q)))
 return k},
 jH(a){var s=null
-return new A.cm(new A.aj(0,4,0,2),A.ct(a,s,s,s,A.c9(s,s,s,s,s,s,s,s,s,s,s,13,s,s,B.ft,s,s,!0,s,s,s,s,s,s,s,s),s,s),s)},
-tW(a,b){var s=null,r=b==null?B.lE:b,q=A.uc(8)
-return A.Uk(a,B.Q,new A.dG(r,s,A.alZ(B.lH,0.5),q,s,s,B.b3),s,new A.aj(0,0,0,8),new A.aj(12,12,12,12),s)},
+return new A.cm(new A.aj(0,2,0,1),A.ct(a,s,s,s,A.c9(s,s,s,s,s,s,s,s,s,s,s,13,s,s,B.ft,s,s,!0,s,s,s,s,s,s,s,s),s,s),s)},
+tW(a,b){var s=null,r=b==null?B.lE:b,q=A.uc(6)
+return A.Uk(a,B.Q,new A.dG(r,s,A.alZ(B.lH,0.5),q,s,s,B.b3),s,new A.aj(0,0,0,6),new A.aj(9,9,9,9),s)},
 Hd(a,b,c,d,e){var s=A.b([this.jH(a)],t.E)
 B.b.S(s,new A.ad(b,new A.aa3(null,b,c,d,e),A.W(b).i("ad<1,f>")))
 return A.e4(s,B.aD,B.Z,B.aJ)},
-L(a){var s,r,q,p,o,n,m,l,k=this,j=null,i="32GB(\u6a19\u6e96\u7248)",h="^\\d*\\.?\\d*",g=A.ct("\u6a02\u5f97\u5efa\u8b70\u4f7f\u7528\u5bb9\u91cf\u8a08\u7b97\u5668",j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,16,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j),f=t.s,e=t.N,d=k.tW(k.Hd("\u8a9e\u97f3\u7de8\u78bc\u683c\u5f0f",A.b(["G.729(8 kbps)","G.711\uff0864 kbps\uff09"],f),k.z,new A.aaj(k),e),B.lo),c=k.jH("\u786c\u789f\u5927\u5c0f"),b=A.ct(i,j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j)
+L(a){var s,r,q,p,o,n,m,l,k=this,j=null,i="32GB(\u6a19\u6e96\u7248)",h="^\\d*\\.?\\d*",g=A.ct("\u5efa\u8b70\u4f7f\u7528\u5bb9\u91cf\u8a08\u7b97\u5668",j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,16,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j),f=t.s,e=t.N,d=k.tW(k.Hd("\u8a9e\u97f3\u7de8\u78bc\u683c\u5f0f",A.b(["G.729(8 kbps)","G.711\uff0864 kbps\uff09"],f),k.z,new A.aaj(k),e),B.lo),c=k.jH("\u786c\u789f\u5927\u5c0f"),b=A.ct(i,j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j)
 b=A.ajP(B.aF,!0,k.Q,new A.aak(k),b,i,new A.fY(-4,-4),e)
 s=A.ct("\u81ea\u8a02",j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j)
 r=A.dL(j,j,8)
@@ -76365,9 +76365,9 @@ p=t.VS
 o=A.b([new A.mO(A.ho(h,!1),!0,"")],p)
 n=A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j)
 m=t.E
-n=A.ajS(A.b([s,r,A.aj8(A.qX(k.d,A.kN(j,new A.dJ(4,B.bb,B.bH),j,new A.aj(6,6,6,6),j,j,j,j,!0,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,!0,j,j,j,!0,!0,j,j,j,j,j,j,j,j,j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,11,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),"GB"),q==="\u81ea\u8a02",o,B.kf,!1,n))],m),B.b4,B.Z,B.aJ)
+n=A.ajS(A.b([s,r,A.aj8(A.qX(k.d,A.kN(j,new A.dJ(4,B.bb,B.bH),j,new A.aj(6,5,6,5),j,j,j,j,!0,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,!0,j,j,j,!0,!0,j,j,j,j,j,j,j,j,j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,11,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),"GB"),q==="\u81ea\u8a02",o,B.kf,!1,n))],m),B.b4,B.Z,B.aJ)
 n=A.e4(A.b([c,b,A.ajP(B.aF,!0,k.Q,new A.aal(k),n,"\u81ea\u8a02",new A.fY(-4,-4),e)],m),B.aD,B.Z,B.aJ)
-b=A.dL(j,8,j)
+b=A.dL(j,6,j)
 c=k.jH("PBX\u898f\u683c")
 o=A.ct("\u540c\u6642\u901a\u8a71/\u5206\u6a5f\u6578\u91cf",j,j,j,A.c9(j,j,B.dN,j,j,j,j,j,j,j,j,11,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j)
 q=A.dL(j,2,j)
@@ -76379,12 +76379,12 @@ s=A.a0(l,A.k(l).i("v.E"))
 l=A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j)
 r=k.tW(A.e4(A.b([n,b,A.e4(A.b([c,o,q,A.avZ(A.kN(j,new A.dJ(4,B.bb,B.bH),j,new A.aj(6,6,6,6),j,j,j,j,!0,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,!0,j,j,j,!0,!0,j,j,j,j,j,j,j,j,j,j,j,j,j),s,new A.aan(k),l,r,e)],m),B.aD,B.Z,B.aJ)],m),B.b4,B.Z,B.aJ),B.C4)
 e=k.Hd("\u516c\u53f8\u985e\u578b",A.b(["\u4e00\u822c\u4f01\u696d","\u96fb\u8a2a\u4f01\u696d"],f),k.at,new A.aao(k),e)
-f=A.dL(j,8,j)
+f=A.dL(j,4,j)
 l=k.jH("\u8a71\u6a5f\u6578\u91cf")
 s=A.b([new A.mO(A.ho(h,!1),!0,"")],p)
 q=A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j)
 q=A.e4(A.b([l,A.qX(k.e,A.kN(j,new A.dJ(4,B.bb,B.bH),j,new A.aj(6,6,6,6),j,j,j,j,!0,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,!0,j,j,j,!0,!0,j,j,j,j,j,j,j,j,j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,11,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),"\u652f"),j,s,B.kf,!1,q)],m),B.aD,B.Z,B.aJ)
-s=A.dL(j,8,j)
+s=A.dL(j,4,j)
 l=k.jH("\u9304\u97f3\u5929\u6578")
 p=A.b([new A.mO(A.ho(h,!1),!0,"")],p)
 o=A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j)
@@ -76392,18 +76392,18 @@ o=k.tW(A.e4(A.b([e,f,q,s,A.e4(A.b([l,A.qX(k.f,A.kN(j,new A.dJ(4,B.bb,B.bH),j,new
 p=k.jH("\u6bcf\u5929\u5e73\u5747\u901a\u8a71\u79d2\u6578/\u6bcf\u652f\u8a71\u6a5f")
 l=A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j)
 l=A.e4(A.b([p,A.qX(k.r,A.kN(j,new A.dJ(4,B.bb,B.bH),j,new A.aj(6,6,6,6),j,j,j,j,!0,j,j,j,j,j,j,B.f3,!0,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,!0,j,j,j,!0,!0,j,j,j,j,j,j,j,j,j,j,j,j,j),j,j,j,!0,l)],m),B.aD,B.Z,B.aJ)
-p=A.dL(j,8,j)
+p=A.dL(j,4,j)
 s=k.jH("\u6bcf\u6708\u901a\u8a71\u79d2\u6578(\u9810\u4f30)")
 q=A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j)
 q=A.e4(A.b([s,A.qX(k.w,A.kN(j,new A.dJ(4,B.bb,B.bH),j,new A.aj(6,6,6,6),j,j,j,j,!0,j,j,j,j,j,j,B.f3,!0,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,!0,j,j,j,!0,!0,j,j,j,j,j,j,j,j,j,j,j,j,j),j,j,j,!0,q)],m),B.aD,B.Z,B.aJ)
-s=A.dL(j,8,j)
+s=A.dL(j,4,j)
 f=k.jH("\u9304\u97f3\u4f54\u7528\u5bb9\u91cf(GB)"+k.a_W())
 e=A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j)
 e=A.e4(A.b([f,A.qX(k.x,A.kN(j,new A.dJ(4,B.bb,B.bH),j,new A.aj(6,6,6,6),j,j,j,j,!0,j,j,j,j,j,j,B.f3,!0,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,!0,j,j,j,!0,!0,j,j,j,j,j,j,j,j,j,j,j,j,j),j,j,j,!0,e)],m),B.aD,B.Z,B.aJ)
-f=A.dL(j,8,j)
+f=A.dL(j,4,j)
 c=k.jH("\u5efa\u8b70\u4f7f\u7528\u786c\u789f\u5bb9\u91cf\u5927\u5c0f")
 b=A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j)
-return new A.xK(new A.u3(g,!0,new A.Ob(50,j,1/0,50),50,j),A.oZ(A.aoO(new A.eC(new A.ab(0,450,0,1/0),A.e4(A.b([d,r,o,k.tW(A.e4(A.b([l,p,q,s,e,f,A.e4(A.b([c,A.qX(k.y,A.kN(j,new A.dJ(4,B.bb,B.bH),j,new A.aj(6,6,6,6),j,j,j,j,!0,j,j,j,j,j,j,B.f3,!0,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,!0,j,j,j,!0,!0,j,j,j,j,j,j,j,j,j,j,j,j,j),j,j,j,!0,b)],m),B.aD,B.Z,B.aJ)],m),B.b4,B.Z,B.aJ),B.BG),A.dL(j,12,j),A.ajS(A.b([A.aj8(A.amS(A.ct("\u8a08\u7b97\u7d50\u679c",j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j),k.gYl(),A.amT(j,j,j,j,j,j,j,j,j,j,j,j,new A.aj(0,8,0,8),j,j,j,j,j,j,j))),A.dL(j,j,8),A.aj8(A.amS(A.ct("\u986f\u793a\u80cc\u666f\u8a08\u7b97\u904e\u7a0b",j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j),k.ga7s(),A.amT(j,j,j,j,j,j,j,j,j,j,j,j,new A.aj(0,8,0,8),j,j,j,j,j,j,j)))],m),B.b4,B.Z,B.aJ)],m),B.b4,B.Z,B.aJ),j),new A.aj(8,8,8,8)),j,j),j)}}
+return new A.xK(new A.u3(g,!0,new A.Ob(45,j,1/0,45),45,j),A.oZ(A.aoO(new A.eC(new A.ab(0,460,0,1/0),A.e4(A.b([d,r,o,k.tW(A.e4(A.b([l,p,q,s,e,f,A.e4(A.b([c,A.qX(k.y,A.kN(j,new A.dJ(4,B.bb,B.bH),j,new A.aj(6,6,6,6),j,j,j,j,!0,j,j,j,j,j,j,B.f3,!0,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,!0,j,j,j,!0,!0,j,j,j,j,j,j,j,j,j,j,j,j,j),j,j,j,!0,b)],m),B.aD,B.Z,B.aJ)],m),B.b4,B.Z,B.aJ),B.BG),A.dL(j,9,j),A.ajS(A.b([A.aj8(A.amS(A.ct("\u8a08\u7b97\u7d50\u679c",j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j),k.gYl(),A.amT(j,j,j,j,j,j,j,j,j,j,j,j,new A.aj(0,7,0,7),j,j,j,j,j,j,j))),A.dL(j,j,7),A.aj8(A.amS(A.ct("\u986f\u793a\u80cc\u666f\u8a08\u7b97\u904e\u7a0b",j,j,j,A.c9(j,j,j,j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j),k.ga7s(),A.amT(j,j,j,j,j,j,j,j,j,j,j,j,new A.aj(0,7,0,7),j,j,j,j,j,j,j)))],m),B.b4,B.Z,B.aJ)],m),B.b4,B.Z,B.aJ),j),new A.aj(7,7,7,7)),j,j),j)}}
 A.aac.prototype={
 $0(){var s,r=this.a,q=r.Q
 if(q==="32GB(\u6a19\u6e96\u7248)")r.ay=25.6
