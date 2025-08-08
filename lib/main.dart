@@ -341,7 +341,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
     // 根據錄音天數決定建議使用硬碟的顯示內容
     String recommendedText;
     if (double.parse(recordDays) > 365) {
-      recommendedText = '1GB PBX系統區+\'${pbxSpecs[pbxSpec]!['dataArea']}GB\' PBX資料區+錄音佔用容量$recordingCapacity=${1 + pbxSpecs[pbxSpec]!['dataArea'] + double.parse(recordingCapacity.replaceAll('GB', ''))}GB。\n因錄音天數超過365天，故建議可外掛R6錄音備份系統，延長錄音備份至2年';
+      recommendedText = '1GB PBX系統區+\'${pbxSpecs[pbxSpec]!['dataArea']}GB\' PBX資料區+錄音佔用容量$recordingCapacity=${1 + pbxSpecs[pbxSpec]!['dataArea'] + double.parse(recordingCapacity.replaceAll('GB', ''))}GB。\n因錄音天數超過365天，故建議\'可外掛R6錄音備份系統，延長錄音備份至2年\'';
     } else {
       recommendedText = '1GB PBX系統區+\'${pbxSpecs[pbxSpec]!['dataArea']}GB\' PBX資料區+錄音佔用容量$recordingCapacity=${1 + pbxSpecs[pbxSpec]!['dataArea'] + double.parse(recordingCapacity.replaceAll('GB', ''))}GB，故建議\'$recommendedStorage\'';
     }
