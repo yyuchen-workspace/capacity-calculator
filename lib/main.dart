@@ -902,7 +902,7 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
         _buildInputSections(context),
         _buildNotificationCard(),
         _buildResultsSection(context),
-        SizedBox(height: 16),
+        SizedBox(height: 20),
         _buildActionButtons(),
       ],
     );
@@ -927,9 +927,9 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
               child: Column(
                 children: [
                   _buildResultsSection(context),
-                  SizedBox(height: 64),
+                  SizedBox(height: 72),
                   _buildActionButtons(),
-                  SizedBox(height: 32),
+                  SizedBox(height: 24),
                 ],
               ),
             ),
@@ -947,9 +947,12 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
     
     return Scaffold(
       appBar: AppBar(
-        title: Text('IP PBX建議錄音天數計算', style: TextStyle(fontSize: isDesktop ? 24 : 20)),
+        title: Padding(
+          padding: EdgeInsets.only(top: isDesktop ? 8 : 4),
+          child: Text('IP PBX建議錄音天數計算', style: TextStyle(fontSize: isDesktop ? 24 : 20)),
+        ),
         centerTitle: true,
-        toolbarHeight: isDesktop ? 60 : 50,
+        toolbarHeight: isDesktop ? 56 : 50,
       ),
       body: Center(
         child: SingleChildScrollView(
