@@ -241,20 +241,25 @@ class _CalculatorPageState extends State<CalculatorPage> {
     recordingCapacity = '${_roundUpFirstDecimal(recordingGB).toStringAsFixed(1)}GB';
 
     // Recommended storage
-    double totalUsage = 1 + pbxSpecs[pbxSpec]!['dataArea'] + _roundUpFirstDecimal(recordingGB);
-    
-    if (totalUsage <= 25) {
-      recommendedStorage = '32GB';
-    } else if (totalUsage <= 102) {
-      recommendedStorage = '128GB';
-    } else if (totalUsage <= 204) {
-      recommendedStorage = '256GB';
-    } else if (totalUsage <= 820) {
-      recommendedStorage = '1TB';
-    } else if (totalUsage <= 1638) {
-      recommendedStorage = '2TB';
+    // 如果錄音天數超過365天，直接建議R6系統
+    if (recordDays > 365) {
+      recommendedStorage = '可外掛R6錄音備份系統，延長錄音備份至2年';
     } else {
-      recommendedStorage = '外掛R6錄音備份系統，可直接延長錄音備份至2年';
+      double totalUsage = 1 + pbxSpecs[pbxSpec]!['dataArea'] + _roundUpFirstDecimal(recordingGB);
+      
+      if (totalUsage <= 25) {
+        recommendedStorage = '32GB';
+      } else if (totalUsage <= 102) {
+        recommendedStorage = '128GB';
+      } else if (totalUsage <= 204) {
+        recommendedStorage = '256GB';
+      } else if (totalUsage <= 820) {
+        recommendedStorage = '1TB';
+      } else if (totalUsage <= 1638) {
+        recommendedStorage = '2TB';
+      } else {
+        recommendedStorage = '可外掛R6錄音備份系統，延長錄音備份至2年';
+      }
     }
 
     setState(() {
@@ -733,18 +738,21 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSectionTitle('每支話機/每天平均通話秒數'),
-              TextField(
-                controller: dailyCallController,
-                readOnly: true,
-                enableInteractiveSelection: false,
-                mouseCursor: SystemMouseCursors.basic,
-                style: TextStyle(fontSize: 16),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  fillColor: Colors.grey[100],
-                  filled: true,
-                  isDense: _getFieldDense(context),
-                  contentPadding: _getFieldPadding(context),
+              MouseRegion(
+                cursor: SystemMouseCursors.forbidden,
+                child: TextField(
+                  controller: dailyCallController,
+                  readOnly: true,
+                  enableInteractiveSelection: false,
+                  mouseCursor: SystemMouseCursors.forbidden,
+                  style: TextStyle(fontSize: 16),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    fillColor: Colors.grey[100],
+                    filled: true,
+                    isDense: _getFieldDense(context),
+                    contentPadding: _getFieldPadding(context),
+                  ),
                 ),
               ),
             ],
@@ -757,18 +765,21 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSectionTitle('每月通話秒數(預估)'),
-              TextField(
-                controller: monthlyCallController,
-                readOnly: true,
-                enableInteractiveSelection: false,
-                mouseCursor: SystemMouseCursors.basic,
-                style: TextStyle(fontSize: 16),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  fillColor: Colors.grey[100],
-                  filled: true,
-                  isDense: _getFieldDense(context),
-                  contentPadding: _getFieldPadding(context),
+              MouseRegion(
+                cursor: SystemMouseCursors.forbidden,
+                child: TextField(
+                  controller: monthlyCallController,
+                  readOnly: true,
+                  enableInteractiveSelection: false,
+                  mouseCursor: SystemMouseCursors.forbidden,
+                  style: TextStyle(fontSize: 16),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    fillColor: Colors.grey[100],
+                    filled: true,
+                    isDense: _getFieldDense(context),
+                    contentPadding: _getFieldPadding(context),
+                  ),
                 ),
               ),
             ],
@@ -781,18 +792,21 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSectionTitle('錄音佔用容量${_getEstimatedCapacityText()}'),
-              TextField(
-                controller: recordingCapacityController,
-                readOnly: true,
-                enableInteractiveSelection: false,
-                mouseCursor: SystemMouseCursors.basic,
-                style: TextStyle(fontSize: 16),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  fillColor: Colors.grey[100],
-                  filled: true,
-                  isDense: _getFieldDense(context),
-                  contentPadding: _getFieldPadding(context),
+              MouseRegion(
+                cursor: SystemMouseCursors.forbidden,
+                child: TextField(
+                  controller: recordingCapacityController,
+                  readOnly: true,
+                  enableInteractiveSelection: false,
+                  mouseCursor: SystemMouseCursors.forbidden,
+                  style: TextStyle(fontSize: 16),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    fillColor: Colors.grey[100],
+                    filled: true,
+                    isDense: _getFieldDense(context),
+                    contentPadding: _getFieldPadding(context),
+                  ),
                 ),
               ),
             ],
@@ -805,18 +819,21 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSectionTitle('建議使用硬碟容量大小'),
-              TextField(
-                controller: recommendedStorageController,
-                readOnly: true,
-                enableInteractiveSelection: false,
-                mouseCursor: SystemMouseCursors.basic,
-                style: TextStyle(fontSize: 16),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  fillColor: Colors.grey[100],
-                  filled: true,
-                  isDense: _getFieldDense(context),
-                  contentPadding: _getFieldPadding(context),
+              MouseRegion(
+                cursor: SystemMouseCursors.forbidden,
+                child: TextField(
+                  controller: recommendedStorageController,
+                  readOnly: true,
+                  enableInteractiveSelection: false,
+                  mouseCursor: SystemMouseCursors.forbidden,
+                  style: TextStyle(fontSize: 16),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    fillColor: Colors.grey[100],
+                    filled: true,
+                    isDense: _getFieldDense(context),
+                    contentPadding: _getFieldPadding(context),
+                  ),
                 ),
               ),
             ],
@@ -930,7 +947,7 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
     
     return Scaffold(
       appBar: AppBar(
-        title: Text('IP PBX建議錄音天數計算', style: TextStyle(fontSize: 20)),
+        title: Text('IP PBX建議錄音天數計算', style: TextStyle(fontSize: isDesktop ? 24 : 20)),
         centerTitle: true,
         toolbarHeight: 45,
       ),

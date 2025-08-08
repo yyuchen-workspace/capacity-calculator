@@ -1,2 +1,2 @@
 # capacity-calculator
-建議使用容量計算器
+IP PBX建議錄音天數計算
