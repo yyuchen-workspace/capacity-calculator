@@ -948,11 +948,11 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
     return Scaffold(
       appBar: AppBar(
         title: Padding(
-          padding: EdgeInsets.only(top: isDesktop ? 16 : 8),
+          padding: EdgeInsets.only(top: isDesktop ? 24 : 8),
           child: Text('IP PBX建議錄音天數計算', style: TextStyle(fontSize: isDesktop ? 24 : 20)),
         ),
         centerTitle: true,
-        toolbarHeight: isDesktop ? 64 : 56,
+        toolbarHeight: isDesktop ? 72 : 56,
       ),
       body: Center(
         child: SingleChildScrollView(
