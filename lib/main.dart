@@ -338,6 +338,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
     String dailySecondsText = companyType == '一般企業' ? '1800' : '18000';
     String formatText = audioFormat == 'G.729(8 kbps)' ? '1000bytes(G.729)' : '8000bytes(G.711)';
 
+    // 根據錄音天數決定建議使用硬碟的顯示內容
+    String recommendedText;
+    if (double.parse(recordDays) > 365) {
+      recommendedText = '1GB PBX系統區+\'${pbxSpecs[pbxSpec]!['dataArea']}GB\' PBX資料區+錄音佔用容量$recordingCapacity=${1 + pbxSpecs[pbxSpec]!['dataArea'] + double.parse(recordingCapacity.replaceAll('GB', ''))}GB。\n因錄音天數超過365天，故建議可外掛R6錄音備份系統，延長錄音備份至2年';
+    } else {
+      recommendedText = '1GB PBX系統區+\'${pbxSpecs[pbxSpec]!['dataArea']}GB\' PBX資料區+錄音佔用容量$recordingCapacity=${1 + pbxSpecs[pbxSpec]!['dataArea'] + double.parse(recordingCapacity.replaceAll('GB', ''))}GB，故建議\'$recommendedStorage\'';
+    }
+
     String processText = '''詳細結果:
 硬碟容量
 '$storageSize'*0.8=#${actualUsableCapacity}#GB
@@ -353,13 +361,8 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
 '$monthlyCallSeconds'每月通話秒數*$formatText/1048576(轉MB)/1024(轉GB)*1.5(預留)=$recordingCapacity
 (4)
 建議使用硬碟
-1GB PBX系統區+'${pbxSpecs[pbxSpec]!['dataArea']}GB' PBX資料區+錄音佔用容量$recordingCapacity=${1 + pbxSpecs[pbxSpec]!['dataArea'] + double.parse(recordingCapacity.replaceAll('GB', ''))}GB，故建議'$recommendedStorage'
+$recommendedText
 ''';
-    
-    // 如果錄音天數超過365天，添加R6系統說明
-    if (double.parse(recordDays) > 365) {
-      processText += '\n\n因錄音天數超過365天，故建議可外掛R6錄音備份系統，延長錄音備份至2年';
-    }
 
     showDialog(
       context: context,
