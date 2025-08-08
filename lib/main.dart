@@ -491,7 +491,7 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
       constraints: BoxConstraints(
         minHeight: _isDesktop(context) ? 48.0 : 36.0, // 最小高度匹配欄位
       ),
-      padding: _getFieldPadding(context).copyWith(horizontal: 12),
+      padding: _getFieldPadding(context).copyWith(left: 12, right: 12),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(4),
