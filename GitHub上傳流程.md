@@ -98,9 +98,14 @@ git commit -m "重構：提取響應式設計通用方法"
 
 #### 5.1 啟用 GitHub Pages
 1. 進入 GitHub 倉庫頁面
-2. 點擊 "Settings" 標籤
-3. 滾動到 "Pages" 部分
-4. 在 "Source" 下選擇 "GitHub Actions"
+2. 點擊 "Settings" 標籤  
+3. 在左側選單中找到並點擊 "Pages"
+4. 在 "Source" 下拉選單中選擇 "GitHub Actions"
+5. 確保 "Actions permissions" 設定允許讀寫權限：
+   - 點擊 "Settings" → "Actions" → "General" 
+   - 在 "Workflow permissions" 選擇 "Read and write permissions"
+   - 勾選 "Allow GitHub Actions to create and approve pull requests"
+   - 點擊 "Save"
 
 #### 5.2 自動部署流程
 - 每次推送代碼到 `main` 分支時，GitHub Actions 會自動：
@@ -184,9 +189,19 @@ git push
 ```
 
 #### 10.3 GitHub Pages 部署失敗
-1. 檢查 Actions 標籤中的部署日誌
-2. 確認 `flutter build web` 命令可在本地成功執行
-3. 檢查 `.github/workflows/deploy.yml` 配置是否正確
+**常見錯誤：Permission denied (403)**
+1. 檢查 Actions 權限設定：
+   - Settings → Actions → General → Workflow permissions
+   - 選擇 "Read and write permissions"
+   - 勾選 "Allow GitHub Actions to create and approve pull requests"
+
+2. 檢查 Pages 設定：
+   - Settings → Pages → Source: "GitHub Actions"
+
+3. 其他檢查項目：
+   - 確認 `flutter build web` 命令可在本地成功執行
+   - 檢查 `.github/workflows/deploy.yml` 配置是否正確
+   - 查看 Actions 標籤中的詳細部署日誌
 
 ## 專案維護
 
