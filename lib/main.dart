@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '建議使用容量計算器',
+      title: 'IP PBX建議錄音天數計算',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -32,6 +32,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
   final TextEditingController monthlyCallController = TextEditingController();
   final TextEditingController recordingCapacityController = TextEditingController();
   final TextEditingController recommendedStorageController = TextEditingController();
+  final TextEditingController notificationController = TextEditingController();
 
   // State variables
   String? audioFormat;
@@ -39,6 +40,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
   String? pbxSpec;
   String? companyType;
   bool isCalculated = false;
+  bool needsRecalculation = false;
 
   // Calculated values
   double actualUsableCapacity = 0.0;
@@ -61,6 +63,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
   void initState() {
     super.initState();
     customStorageController.addListener(_updateActualCapacity);
+    customStorageController.addListener(_updateNotification);
+    phoneCountController.addListener(_updateNotification);
+    recordDaysController.addListener(_updateNotification);
+    // 設定初始通知訊息
+    notificationController.text = '請完成以上所有選項設定，然後點擊「計算結果」';
   }
 
   @override
@@ -72,6 +79,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
     monthlyCallController.dispose();
     recordingCapacityController.dispose();
     recommendedStorageController.dispose();
+    notificationController.dispose();
     super.dispose();
   }
 
@@ -116,6 +124,15 @@ class _CalculatorPageState extends State<CalculatorPage> {
       } else {
         dailyCallDuration = '';
         dailyCallController.text = '';
+      }
+    });
+  }
+
+  void _updateNotification() {
+    setState(() {
+      if (!needsRecalculation) {
+        needsRecalculation = true;
+        notificationController.text = '務必點擊「計算結果」，重新計算!!';
       }
     });
   }
@@ -187,7 +204,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       } else if (recordDays < 0) {
         errors.add('錄音天數請勿輸入負數！');
       } else if (recordDays > 365) {
-        errors.add('錄音天數不可超過365天');
+        // 錄音天數超過365天不再作為錯誤，改為後續提示
       }
     }
 
@@ -237,34 +254,53 @@ class _CalculatorPageState extends State<CalculatorPage> {
     } else if (totalUsage <= 1638) {
       recommendedStorage = '2TB';
     } else {
-      recommendedStorage = '外掛R6錄音備份系統';
+      recommendedStorage = '外掛R6錄音備份系統，可直接延長錄音備份至2年';
     }
 
     setState(() {
       isCalculated = true;
+      needsRecalculation = false;
       monthlyCallController.text = monthlyCallSeconds;
       recordingCapacityController.text = recordingCapacity;
       recommendedStorageController.text = recommendedStorage;
+      notificationController.text = '計算成功！';
     });
+
+    // 檢查錄音天數是否超過365天，顯示提示
+    if (recordDays > 365) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('提示', style: TextStyle(fontSize: 24)),
+          content: Text('錄音天數超過365天，可外掛R6錄音備份系統，延長錄音備份至2年', style: TextStyle(fontSize: 20)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('確定', style: TextStyle(fontSize: 20)),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   void _showErrorDialog(List<String> errors) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('錯誤'),
+        title: Text('錯誤', style: TextStyle(fontSize: 24)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: errors.map((error) => Padding(
             padding: EdgeInsets.symmetric(vertical: 2),
-            child: Text('• $error'),
+            child: Text('• $error', style: TextStyle(fontSize: 20)),
           )).toList(),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('確定'),
+            child: Text('確定', style: TextStyle(fontSize: 20)),
           ),
         ],
       ),
@@ -272,16 +308,17 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   void _showCalculationProcess() {
-    if (!isCalculated) {
+    // 如果需要重新計算或尚未計算，都顯示提示
+    if (!isCalculated || needsRecalculation) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('提示'),
-          content: Text('尚未計算結果'),
+          title: Text('提示', style: TextStyle(fontSize: 24)),
+          content: Text('請先點擊「計算結果」按鈕進行計算', style: TextStyle(fontSize: 20)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('確定'),
+              child: Text('確定', style: TextStyle(fontSize: 20)),
             ),
           ],
         ),
@@ -297,29 +334,31 @@ class _CalculatorPageState extends State<CalculatorPage> {
     String formatText = audioFormat == 'G.729(8 kbps)' ? '1000bytes(G.729)' : '8000bytes(G.711)';
 
     String processText = '''詳細結果:
-'$storageSize'*0.8=${actualUsableCapacity}GB實際可用
+硬碟容量
+'$storageSize'*0.8=#${actualUsableCapacity}#GB
 
-實際錄音可用保存容量
-${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}GB'
-
+(1)
+錄音保存容量可用
+${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}GB'
+(2)
 每月通話秒數(預估)
-'$phoneCount'台話機*'$recordDays'錄音天數*'$dailySecondsText'通話秒數/天/隻話機='$monthlyCallSeconds'
-
-錄音占用容量(GB)
+'$phoneCount'台話機*'$recordDays'錄音天數*'$dailySecondsText'每支話機/每天平均通話秒數='$monthlyCallSeconds'
+(3)
+錄音占用容量
 '$monthlyCallSeconds'每月通話秒數*$formatText/1048576(轉MB)/1024(轉GB)*1.5(預留)=$recordingCapacity
-
+(4)
 建議使用硬碟
-1GB PBX系統區+$pbxDataArea PBX規格+$recordingCapacity 錄音占用容量=${1 + pbxSpecs[pbxSpec]!['dataArea'] + double.parse(recordingCapacity.replaceAll('GB', ''))}GB，故建議'$recommendedStorage'
+1GB PBX系統區+'${pbxSpecs[pbxSpec]!['dataArea']}GB' PBX資料區+錄音佔用容量$recordingCapacity=${1 + pbxSpecs[pbxSpec]!['dataArea'] + double.parse(recordingCapacity.replaceAll('GB', ''))}GB，故建議'$recommendedStorage'
 ''';
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('背景計算過程'),
+        title: Text('背景計算過程', style: TextStyle(fontSize: 24)),
         content: SingleChildScrollView(
           child: RichText(
             text: TextSpan(
-              style: TextStyle(color: Colors.black, fontSize: 14),
+              style: TextStyle(color: Colors.black, fontSize: 24),
               children: _buildHighlightedText(processText),
             ),
           ),
@@ -327,7 +366,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('確定'),
+            child: Text('確定', style: TextStyle(fontSize: 20)),
           ),
         ],
       ),
@@ -336,15 +375,18 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
 
   List<TextSpan> _buildHighlightedText(String text) {
     List<TextSpan> spans = [];
-    RegExp regExp = RegExp(r"'([^']*)'");
+    // 同時匹配單引號和井號標記
+    RegExp regExp = RegExp(r"'([^']*)'|#([^#]*)#");
     int lastEnd = 0;
     
     for (Match match in regExp.allMatches(text)) {
       if (match.start > lastEnd) {
         spans.add(TextSpan(text: text.substring(lastEnd, match.start)));
       }
+      // group(1) 是單引號內容，group(2) 是井號內容
+      String highlightedText = match.group(1) ?? match.group(2) ?? '';
       spans.add(TextSpan(
-        text: match.group(1),
+        text: highlightedText,
         style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
       ));
       lastEnd = match.end;
@@ -362,7 +404,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
       padding: EdgeInsets.only(top: 2, bottom: 1),
       child: Text(
         title,
-        style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -388,7 +430,7 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
         ...options.map((option) {
           String label = labels?[options.indexOf(option)] ?? option.toString();
           return RadioListTile<T>(
-            title: Text(label, style: TextStyle(fontSize: 13)),
+            title: Text(label, style: TextStyle(fontSize: 16)),
             value: option,
             groupValue: groupValue,
             onChanged: onChanged,
@@ -401,317 +443,505 @@ ${actualUsableCapacity}GB-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity
     );
   }
 
+  Widget _buildHorizontalRadioGroup<T>(String title, List<T> options, T? groupValue, void Function(T?) onChanged, {List<String>? labels}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle(title),
+        Row(
+          children: options.map((option) {
+            String label = labels?[options.indexOf(option)] ?? option.toString();
+            return Expanded(
+              child: RadioListTile<T>(
+                title: Text(label, style: TextStyle(fontSize: 16)),
+                value: option,
+                groupValue: groupValue,
+                onChanged: onChanged,
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  bool _isDesktop(BuildContext context) {
+    return MediaQuery.of(context).size.width > 800;
+  }
+
+  EdgeInsets _getFieldPadding(BuildContext context) {
+    return _isDesktop(context) 
+      ? EdgeInsets.symmetric(horizontal: 12, vertical: 12)
+      : EdgeInsets.symmetric(horizontal: 6, vertical: 6);
+  }
+
+  bool _getFieldDense(BuildContext context) {
+    return !_isDesktop(context);
+  }
+
+  double _getResultSpacing(BuildContext context) {
+    return _isDesktop(context) ? 12.0 : 4.0;
+  }
+
+  Widget _buildUnitLabel(BuildContext context, String unit) {
+    return Container(
+      constraints: BoxConstraints(
+        minHeight: _isDesktop(context) ? 48.0 : 36.0, // 最小高度匹配欄位
+      ),
+      padding: _getFieldPadding(context).copyWith(horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: Colors.grey[400]!),
+      ),
+      child: Center(
+        child: Text(
+          unit,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.black87,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInputSections(BuildContext context) {
+    return Column(
+      children: [
+        // 第1區：語音編碼格式 - 淺藍色
+        _buildSectionCard(
+          color: Colors.blue[50],
+          child: _buildHorizontalRadioGroup<String>(
+            '語音編碼格式',
+            ['G.729(8 kbps)', 'G.711（64 kbps）'],
+            audioFormat,
+            (value) {
+              setState(() => audioFormat = value);
+              _updateNotification();
+            },
+          ),
+        ),
+
+        // 第2區：硬碟大小 + PBX規格 - 淺綠色
+        _buildSectionCard(
+          color: Colors.green[50],
+          child: Column(
+            children: [
+              // 硬碟大小
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle('硬碟大小'),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: Text('32GB(標準版)', style: TextStyle(fontSize: 16)),
+                          value: '32GB(標準版)',
+                          groupValue: storageType,
+                          onChanged: (value) {
+                            setState(() {
+                              storageType = value;
+                              _updateActualCapacity();
+                            });
+                            _updateNotification();
+                          },
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                        ),
+                      ),
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: Row(
+                            children: [
+                              Text('自訂', style: TextStyle(fontSize: 16)),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        controller: customStorageController,
+                                        enabled: storageType == '自訂',
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
+                                        style: TextStyle(fontSize: 16),
+                                        decoration: InputDecoration(
+                                          isDense: _getFieldDense(context),
+                                          contentPadding: _getFieldPadding(context),
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    _buildUnitLabel(context, 'GB'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          value: '自訂',
+                          groupValue: storageType,
+                          onChanged: (value) {
+                            setState(() {
+                              storageType = value;
+                              _updateActualCapacity();
+                            });
+                            _updateNotification();
+                          },
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              
+              SizedBox(height: 6),
+              
+              // PBX規格
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle('PBX規格'),
+                  Text('同時通話/分機數量', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+                  SizedBox(height: 2),
+                  DropdownButtonFormField<String>(
+                    value: pbxSpec,
+                    items: pbxSpecs.keys.map((spec) => DropdownMenuItem(
+                      value: spec,
+                      child: Text(spec, style: TextStyle(fontSize: 16)),
+                    )).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        pbxSpec = value;
+                        _updateRecordingCapacity();
+                      });
+                      _updateNotification();
+                    },
+                    style: TextStyle(fontSize: 16),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      isDense: _getFieldDense(context),
+                      contentPadding: _getFieldPadding(context),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // 第3區：公司類型 + 話機數量 + 錄音天數 - 淺橙色
+        _buildSectionCard(
+          color: Colors.orange[50],
+          child: Column(
+            children: [
+              // 公司類型
+              _buildHorizontalRadioGroup<String>(
+                '公司類型',
+                ['一般企業', '電訪企業'],
+                companyType,
+                (value) {
+                  setState(() {
+                    companyType = value;
+                    _updateDailyCallDuration();
+                  });
+                  _updateNotification();
+                },
+              ),
+
+              SizedBox(height: 4),
+
+              // 話機數量
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle('話機數量'),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: phoneCountController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
+                          style: TextStyle(fontSize: 16),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            isDense: _getFieldDense(context),
+                            contentPadding: _getFieldPadding(context),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      _buildUnitLabel(context, '支'),
+                    ],
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 4),
+
+              // 錄音天數
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle('錄音天數'),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: recordDaysController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
+                          style: TextStyle(fontSize: 16),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            isDense: _getFieldDense(context),
+                            contentPadding: _getFieldPadding(context),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      _buildUnitLabel(context, '天'),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildResultsSection(BuildContext context) {
+    return _buildSectionCard(
+      color: Colors.purple[50],
+      child: Column(
+        children: [
+          // 每天平均通話秒數
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle('每支話機/每天平均通話秒數'),
+              TextField(
+                controller: dailyCallController,
+                readOnly: true,
+                enableInteractiveSelection: false,
+                mouseCursor: SystemMouseCursors.basic,
+                style: TextStyle(fontSize: 16),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  fillColor: Colors.grey[100],
+                  filled: true,
+                  isDense: _getFieldDense(context),
+                  contentPadding: _getFieldPadding(context),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: _getResultSpacing(context)),
+
+          // 每月通話秒數
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle('每月通話秒數(預估)'),
+              TextField(
+                controller: monthlyCallController,
+                readOnly: true,
+                enableInteractiveSelection: false,
+                mouseCursor: SystemMouseCursors.basic,
+                style: TextStyle(fontSize: 16),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  fillColor: Colors.grey[100],
+                  filled: true,
+                  isDense: _getFieldDense(context),
+                  contentPadding: _getFieldPadding(context),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: _getResultSpacing(context)),
+
+          // 錄音佔用容量
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle('錄音佔用容量${_getEstimatedCapacityText()}'),
+              TextField(
+                controller: recordingCapacityController,
+                readOnly: true,
+                enableInteractiveSelection: false,
+                mouseCursor: SystemMouseCursors.basic,
+                style: TextStyle(fontSize: 16),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  fillColor: Colors.grey[100],
+                  filled: true,
+                  isDense: _getFieldDense(context),
+                  contentPadding: _getFieldPadding(context),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: _getResultSpacing(context)),
+
+          // 建議使用硬碟容量大小
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle('建議使用硬碟容量大小'),
+              TextField(
+                controller: recommendedStorageController,
+                readOnly: true,
+                enableInteractiveSelection: false,
+                mouseCursor: SystemMouseCursors.basic,
+                style: TextStyle(fontSize: 16),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  fillColor: Colors.grey[100],
+                  filled: true,
+                  isDense: _getFieldDense(context),
+                  contentPadding: _getFieldPadding(context),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationCard() {
+    return _buildSectionCard(
+      color: needsRecalculation ? Colors.red[50] : (isCalculated ? Colors.green[50] : Colors.blue[50]),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: needsRecalculation ? Colors.red : (isCalculated ? Colors.green : Colors.blue),
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          notificationController.text,
+          style: TextStyle(
+            fontSize: 18,
+            color: needsRecalculation ? Colors.red : (isCalculated ? Colors.green : Colors.blue),
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton(
+            onPressed: _calculateResults,
+            child: Text('計算結果', style: TextStyle(fontSize: 16)),
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(vertical: 7),
+            ),
+          ),
+        ),
+        SizedBox(width: 7),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: _showCalculationProcess,
+            child: Text('顯示背景計算過程', style: TextStyle(fontSize: 16)),
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(vertical: 7),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildInputSections(context),
+        _buildNotificationCard(),
+        _buildResultsSection(context),
+        SizedBox(height: 9),
+        _buildActionButtons(),
+      ],
+    );
+  }
+
+  Widget _buildDesktopLayout() {
+    return Column(
+      children: [
+        // 第一行：輸入區域（左側）+ 結果區域（右側）
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 左側輸入區域
+            Expanded(
+              flex: 2,
+              child: _buildInputSections(context),
+            ),
+            SizedBox(width: 16),
+            // 右側結果區域
+            Expanded(
+              flex: 1,
+              child: Column(
+                children: [
+                  _buildResultsSection(context),
+                  SizedBox(height: 48),
+                  _buildActionButtons(),
+                  SizedBox(height: 24),
+                ],
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 16),
+        _buildNotificationCard(),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = _isDesktop(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text('建議使用容量計算器', style: TextStyle(fontSize: 16)),
+        title: Text('IP PBX建議錄音天數計算', style: TextStyle(fontSize: 20)),
         centerTitle: true,
         toolbarHeight: 45,
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(7),
+          padding: EdgeInsets.all(isDesktop ? 16 : 7),
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 460),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-            // 第1區：語音編碼格式 - 淺藍色
-            _buildSectionCard(
-              color: Colors.blue[50],
-              child: _buildRadioGroup<String>(
-                '語音編碼格式',
-                ['G.729(8 kbps)', 'G.711（64 kbps）'],
-                audioFormat,
-                (value) => setState(() => audioFormat = value),
-              ),
+            constraints: BoxConstraints(
+              maxWidth: isDesktop ? 1200 : 460,
             ),
-
-            // 第2區：硬碟大小 + PBX規格 - 淺綠色
-            _buildSectionCard(
-              color: Colors.green[50],
-              child: Column(
-                children: [
-                  // 硬碟大小
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionTitle('硬碟大小'),
-                      RadioListTile<String>(
-                        title: Text('32GB(標準版)', style: TextStyle(fontSize: 13)),
-                        value: '32GB(標準版)',
-                        groupValue: storageType,
-                        onChanged: (value) {
-                          setState(() {
-                            storageType = value;
-                            _updateActualCapacity();
-                          });
-                        },
-                        dense: true,
-                        contentPadding: EdgeInsets.zero,
-                        visualDensity: VisualDensity(horizontal: -4, vertical: -4),
-                      ),
-                      RadioListTile<String>(
-                        title: Row(
-                          children: [
-                            Text('自訂', style: TextStyle(fontSize: 13)),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: TextField(
-                                controller: customStorageController,
-                                enabled: storageType == '自訂',
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
-                                style: TextStyle(fontSize: 13),
-                                decoration: InputDecoration(
-                                  suffixText: 'GB',
-                                  suffixStyle: TextStyle(fontSize: 11),
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 5),
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        value: '自訂',
-                        groupValue: storageType,
-                        onChanged: (value) {
-                          setState(() {
-                            storageType = value;
-                            _updateActualCapacity();
-                          });
-                        },
-                        dense: true,
-                        contentPadding: EdgeInsets.zero,
-                        visualDensity: VisualDensity(horizontal: -4, vertical: -4),
-                      ),
-                    ],
-                  ),
-                  
-                  SizedBox(height: 6),
-                  
-                  // PBX規格
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionTitle('PBX規格'),
-                      Text('同時通話/分機數量', style: TextStyle(fontSize: 11, color: Colors.grey[600])),
-                      SizedBox(height: 2),
-                      DropdownButtonFormField<String>(
-                        value: pbxSpec,
-                        items: pbxSpecs.keys.map((spec) => DropdownMenuItem(
-                          value: spec,
-                          child: Text(spec, style: TextStyle(fontSize: 13)),
-                        )).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            pbxSpec = value;
-                            _updateRecordingCapacity();
-                          });
-                        },
-                        style: TextStyle(fontSize: 13),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // 第3區：公司類型 + 話機數量 + 錄音天數 - 淺橙色
-            _buildSectionCard(
-              color: Colors.orange[50],
-              child: Column(
-                children: [
-                  // 公司類型
-                  _buildRadioGroup<String>(
-                    '公司類型',
-                    ['一般企業', '電訪企業'],
-                    companyType,
-                    (value) {
-                      setState(() {
-                        companyType = value;
-                        _updateDailyCallDuration();
-                      });
-                    },
-                  ),
-
-                  SizedBox(height: 4),
-
-                  // 話機數量
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionTitle('話機數量'),
-                      TextField(
-                        controller: phoneCountController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
-                        style: TextStyle(fontSize: 13),
-                        decoration: InputDecoration(
-                          suffixText: '支',
-                          suffixStyle: TextStyle(fontSize: 11),
-                          border: OutlineInputBorder(),
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 4),
-
-                  // 錄音天數
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionTitle('錄音天數'),
-                      TextField(
-                        controller: recordDaysController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
-                        style: TextStyle(fontSize: 13),
-                        decoration: InputDecoration(
-                          suffixText: '天',
-                          suffixStyle: TextStyle(fontSize: 11),
-                          border: OutlineInputBorder(),
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // 第4區：計算結果 - 淺紫色
-            _buildSectionCard(
-              color: Colors.purple[50],
-              child: Column(
-                children: [
-                  // 每天平均通話秒數
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionTitle('每天平均通話秒數/每支話機'),
-                      TextField(
-                        controller: dailyCallController,
-                        readOnly: true,
-                        style: TextStyle(fontSize: 13),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          fillColor: Colors.grey[100],
-                          filled: true,
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 4),
-
-                  // 每月通話秒數
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionTitle('每月通話秒數(預估)'),
-                      TextField(
-                        controller: monthlyCallController,
-                        readOnly: true,
-                        style: TextStyle(fontSize: 13),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          fillColor: Colors.grey[100],
-                          filled: true,
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 4),
-
-                  // 錄音佔用容量
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionTitle('錄音佔用容量(GB)${_getEstimatedCapacityText()}'),
-                      TextField(
-                        controller: recordingCapacityController,
-                        readOnly: true,
-                        style: TextStyle(fontSize: 13),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          fillColor: Colors.grey[100],
-                          filled: true,
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 4),
-
-                  // 建議使用硬碟容量大小
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionTitle('建議使用硬碟容量大小'),
-                      TextField(
-                        controller: recommendedStorageController,
-                        readOnly: true,
-                        style: TextStyle(fontSize: 13),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          fillColor: Colors.grey[100],
-                          filled: true,
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // 按鈕
-            SizedBox(height: 9),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: _calculateResults,
-                    child: Text('計算結果', style: TextStyle(fontSize: 13)),
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 7),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 7),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: _showCalculationProcess,
-                    child: Text('顯示背景計算過程', style: TextStyle(fontSize: 13)),
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 7),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-              ],
-            ),
+            child: isDesktop ? _buildDesktopLayout() : _buildMobileLayout(),
           ),
         ),
       ),
