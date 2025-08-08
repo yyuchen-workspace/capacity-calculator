@@ -902,7 +902,7 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
         _buildInputSections(context),
         _buildNotificationCard(),
         _buildResultsSection(context),
-        SizedBox(height: 9),
+        SizedBox(height: 16),
         _buildActionButtons(),
       ],
     );
@@ -927,9 +927,9 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
               child: Column(
                 children: [
                   _buildResultsSection(context),
-                  SizedBox(height: 48),
+                  SizedBox(height: 64),
                   _buildActionButtons(),
-                  SizedBox(height: 24),
+                  SizedBox(height: 32),
                 ],
               ),
             ),
@@ -949,7 +949,7 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
       appBar: AppBar(
         title: Text('IP PBX建議錄音天數計算', style: TextStyle(fontSize: isDesktop ? 24 : 20)),
         centerTitle: true,
-        toolbarHeight: 45,
+        toolbarHeight: isDesktop ? 60 : 50,
       ),
       body: Center(
         child: SingleChildScrollView(
