@@ -93,28 +93,136 @@ git commit -m "重構：提取響應式設計通用方法"
 
 ## 自動部署到 GitHub Pages
 
-### 5. 設置 GitHub Actions 自動部署
-專案已包含 `.github/workflows/deploy.yml` 配置文件，可自動將 Flutter Web 應用部署到 GitHub Pages。
+### 5. GitHub Actions 自動部署詳解
+本專案使用現代化的 GitHub Actions 自動部署流程，採用官方 GitHub Pages Actions 進行部署。
 
-#### 5.1 啟用 GitHub Pages
-1. 進入 GitHub 倉庫頁面
-2. 點擊 "Settings" 標籤  
-3. 在左側選單中找到並點擊 "Pages"
-4. 在 "Source" 下拉選單中選擇 "GitHub Actions"
-5. 確保 "Actions permissions" 設定允許讀寫權限：
-   - 點擊 "Settings" → "Actions" → "General" 
-   - 在 "Workflow permissions" 選擇 "Read and write permissions"
-   - 勾選 "Allow GitHub Actions to create and approve pull requests"
-   - 點擊 "Save"
+#### 5.1 工作流程配置檔案
+**位置**: `.github/workflows/deploy.yml`
 
-#### 5.2 自動部署流程
-- 每次推送代碼到 `main` 分支時，GitHub Actions 會自動：
-  1. 安裝 Flutter 環境
-  2. 編譯 Web 應用
-  3. 部署到 GitHub Pages
-  
-- 部署完成後，可通過以下網址訪問：
-  `https://YOUR_USERNAME.github.io/capacity-calculator/`
+**完整配置內容**:
+```yaml
+name: Deploy Flutter Web to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.7'
+        channel: 'stable'
+        
+    - name: Get dependencies
+      run: flutter pub get
+      
+    - name: Build web
+      run: flutter build web --release --base-href="/capacity-calculator/"
+      
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './build/web'
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+      if: github.ref == 'refs/heads/main'
+```
+
+#### 5.2 部署觸發條件與權限
+**觸發條件**：
+- 推送代碼到 `main` 分支時自動觸發並部署
+- Pull Request 到 `main` 分支時會執行建置測試（但不部署）
+
+**權限設置**：
+- `contents: read` - 讀取儲存庫內容
+- `pages: write` - 寫入 GitHub Pages
+- `id-token: write` - 寫入身份令牌（用於安全驗證）
+
+#### 5.3 自動部署步驟詳解
+1. **代碼檢出**: 使用 `actions/checkout@v3` 取得最新代碼
+2. **環境設置**: 安裝 Flutter 3.32.7 穩定版
+3. **依賴安裝**: 執行 `flutter pub get` 安裝專案依賴
+4. **Web 編譯**: 執行 `flutter build web --release` 編譯生產版本
+5. **Pages 配置**: 使用 `actions/configure-pages@v4` 配置 GitHub Pages
+6. **上傳產物**: 使用 `actions/upload-pages-artifact@v3` 上傳建置結果
+7. **執行部署**: 使用 `actions/deploy-pages@v4` 部署到 GitHub Pages
+
+#### 5.4 必需的 GitHub 設置
+
+**Step 1: 設置 Actions 權限**
+1. 進入 GitHub 儲存庫頁面
+2. 點擊 "**Settings**" 標籤
+3. 點擊左側選單的 "**Actions**" → "**General**"
+4. 在 "**Workflow permissions**" 選擇：
+   - ✅ **"Read and write permissions"**
+5. 勾選：
+   - ✅ **"Allow GitHub Actions to create and approve pull requests"**
+6. 點擊 "**Save**" 儲存設定
+
+**Step 2: 啟用 GitHub Pages**
+1. 在同一個 Settings 頁面中
+2. 點擊左側選單的 "**Pages**"
+3. 在 "**Source**" 下拉選單中選擇：
+   - ✅ **"GitHub Actions"**
+4. 設定會自動儲存
+
+#### 5.5 部署完成後的訪問
+- **主要網址**: `https://yyuchen-workspace.github.io/capacity-calculator/`
+- 每次推送到 `main` 分支後，約需要 2-5 分鐘完成自動部署
+- 部署完成後網站內容會自動更新
+
+#### 5.6 監控部署狀態
+- 進入儲存庫的 "**Actions**" 標籤
+- 查看最近的工作流程執行狀態：
+  - 🟢 **綠色勾選**: 部署成功
+  - 🔴 **紅色叉號**: 部署失敗（點擊可查看詳細錯誤日誌）
+  - 🟡 **黃色圓圈**: 正在執行中
+
+#### 5.7 部署失敗排解
+**常見錯誤及解決方法**：
+
+1. **403 Permission denied 錯誤**
+   - 確認 Actions 權限設置是否正確
+   - 檢查是否選擇 "Read and write permissions"
+
+2. **Flutter 建置失敗**
+   - 在本地測試 `flutter build web --release` 是否正常
+   - 檢查 pubspec.yaml 依賴是否有問題
+
+3. **Pages 部署失敗** 
+   - 確認 GitHub Pages 設置為 "GitHub Actions"
+   - 查看 Actions 日誌中的詳細錯誤訊息
+
+4. **網站訪問 404**
+   - 檢查 base-href 設置是否正確
+   - 確認儲存庫名稱與網址路徑一致
 
 ## 開發工作流程
 
