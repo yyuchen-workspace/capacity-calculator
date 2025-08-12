@@ -736,20 +736,23 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
   Widget _buildResultsSection(BuildContext context) {
     return _buildSectionCard(
       color: Colors.purple[50],
-      child: Column(
-        children: [
-          // 預估結果標題
-          Padding(
-            padding: EdgeInsets.only(bottom: 8),
-            child: Text(
-              '預估結果',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // 預估結果標題
+            Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: Text(
+                '預估結果',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
               ),
             ),
-          ),
           // 每天平均通話秒數
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -855,7 +858,8 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
               ),
             ],
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -919,7 +923,7 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
         _buildInputSections(context),
         _buildNotificationCard(),
         _buildResultsSection(context),
-        SizedBox(height: 20),
+        SizedBox(height: 45),
         _buildActionButtons(),
       ],
     );
@@ -944,7 +948,7 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
               child: Column(
                 children: [
                   _buildResultsSection(context),
-                  SizedBox(height: 72),
+                  SizedBox(height: 45),
                   _buildActionButtons(),
                   SizedBox(height: 24),
                 ],
