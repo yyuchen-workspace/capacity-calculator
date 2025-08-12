@@ -1,0 +1,32 @@
+# Documentation files (keep local only)
+GitHub上傳流程.md
+test_process.md
+project_build.md
+claude.md
+CLAUDE.md
+
+# Flutter build files
+.dart_tool/
+build/
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Dependencies
+.packages
+.pub-cache/
+.pub/
+
+# Test coverage
+coverage/
+
+# Temporary files
+*.log
+*.tmp
+*.temp
