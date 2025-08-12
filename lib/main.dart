@@ -338,6 +338,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
     String dailySecondsText = companyType == '一般企業' ? '1800' : '18000';
     String formatText = audioFormat == 'G.729(8 kbps)' ? '1000bytes(G.729)' : '8000bytes(G.711)';
 
+    double recordDaysNum = double.parse(recordDays);
+    String r6Recommendation = recordDaysNum > 365 
+      ? '\n\'因錄音天數超過365天，故建議可外掛R6錄音備份系統，延長錄音備份至2年\''
+      : '，故建議\'$recommendedStorage\'';
+    
     String processText = '''詳細結果:
 硬碟容量
 '$storageSize'*0.8=#${actualUsableCapacity}#GB
@@ -353,7 +358,7 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
 '$monthlyCallSeconds'每月通話秒數*$formatText/1048576(轉MB)/1024(轉GB)*1.5(預留)=$recordingCapacity
 (4)
 建議使用硬碟
-1GB PBX系統區+'${pbxSpecs[pbxSpec]!['dataArea']}GB' PBX資料區+錄音佔用容量$recordingCapacity=${1 + pbxSpecs[pbxSpec]!['dataArea'] + double.parse(recordingCapacity.replaceAll('GB', ''))}GB，故建議'$recommendedStorage'
+1GB PBX系統區+'${pbxSpecs[pbxSpec]!['dataArea']}GB' PBX資料區+錄音佔用容量$recordingCapacity=${1 + pbxSpecs[pbxSpec]!['dataArea'] + double.parse(recordingCapacity.replaceAll('GB', ''))}GB$r6Recommendation
 ''';
 
     showDialog(
@@ -699,7 +704,7 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('錄音天數'),
+                  _buildSectionTitle('錄音天數（限365天(含)以下）'),
                   Row(
                     children: [
                       Expanded(
@@ -733,6 +738,18 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
       color: Colors.purple[50],
       child: Column(
         children: [
+          // 預估結果標題
+          Padding(
+            padding: EdgeInsets.only(bottom: 8),
+            child: Text(
+              '預估結果',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+          ),
           // 每天平均通話秒數
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
