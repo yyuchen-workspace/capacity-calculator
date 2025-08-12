@@ -923,7 +923,7 @@ ${actualUsableCapacity}G-1GB(系統區)-$pbxDataArea='${actualRecordingCapacity}
         _buildInputSections(context),
         _buildNotificationCard(),
         _buildResultsSection(context),
-        SizedBox(height: 45),
+        SizedBox(height: 20),
         _buildActionButtons(),
       ],
     );

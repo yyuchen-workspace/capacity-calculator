@@ -1,105 +1,18 @@
-# GitHub 上傳流程說明文檔
+# GitHub上傳流程與部署設定
 
-本文檔詳細說明如何將 IP PBX 建議錄音天數計算器專案上傳至 GitHub 並進行版本管理。
+## 專案概述
+這是一個基於 Flutter 的 IP PBX 錄音容量計算器網頁應用程式，使用 GitHub Actions 自動部署到 GitHub Pages。
 
-## 專案簡介
+## GitHub Actions 自動部署設定
 
-**專案名稱:** IP PBX 建議錄音天數計算器  
-**技術棧:** Flutter Web (Dart)  
-**功能:** 基於用戶輸入的語音編碼格式、硬碟大小、PBX規格等參數，計算建議的錄音天數和硬碟容量  
-**特色:** 響應式設計，支援手機版和電腦版不同佈局  
-
-## 目錄結構
+### 1. 檔案結構
 ```
-capacity_calculater/
-├── lib/
-│   └── main.dart           # 主要應用程式碼
-├── web/                    # Web 平台配置文件
-├── build/web/              # 編譯後的 Web 文件（靜態網站）
-├── pubspec.yaml           # Flutter 依賴管理文件
-├── CLAUDE.md              # 專案需求和開發指南
-├── README.md              # 專案說明文檔
-└── GitHub上傳流程.md      # 本文檔
+.github/
+  workflows/
+    deploy.yml    # 部署工作流程設定檔
 ```
 
-## GitHub 上傳步驟
-
-### 1. 初始化 Git 倉庫（如果是新專案）
-```bash
-# 進入專案目錄
-cd capacity_calculater
-
-# 初始化 Git
-git init
-
-# 添加所有文件
-git add .
-
-# 創建初始提交
-git commit -m "Initial commit: Flutter web capacity calculator"
-```
-
-### 2. 在 GitHub 創建遠程倉庫
-1. 登入 GitHub 帳號
-2. 點擊右上角 "+" 按鈕，選擇 "New repository"
-3. 輸入倉庫名稱：`capacity-calculator`
-4. 選擇 Public 或 Private
-5. 不勾選 "Initialize this repository with a README"
-6. 點擊 "Create repository"
-
-### 3. 連接本地倉庫與 GitHub
-```bash
-# 添加遠程倉庫
-git remote add origin https://github.com/YOUR_USERNAME/capacity-calculator.git
-
-# 推送代碼到 GitHub
-git push -u origin main
-```
-
-### 4. 日常版本管理流程
-
-#### 4.1 提交代碼變更
-```bash
-# 查看修改狀態
-git status
-
-# 添加修改的文件
-git add lib/main.dart
-
-# 或者添加所有修改
-git add .
-
-# 提交變更（建議使用描述性提交訊息）
-git commit -m "功能：新增響應式設計支援手機版和電腦版佈局"
-
-# 推送到 GitHub
-git push
-```
-
-#### 4.2 推薦的提交訊息格式
-```bash
-# 新功能
-git commit -m "功能：新增計算背景過程顯示功能"
-
-# Bug 修復
-git commit -m "修復：修正電腦版單位顯示問題"
-
-# UI 改進
-git commit -m "UI：優化手機版欄位間距和按鈕位置"
-
-# 重構
-git commit -m "重構：提取響應式設計通用方法"
-```
-
-## 自動部署到 GitHub Pages
-
-### 5. GitHub Actions 自動部署詳解
-本專案使用現代化的 GitHub Actions 自動部署流程，採用官方 GitHub Pages Actions 進行部署。
-
-#### 5.1 工作流程配置檔案
-**位置**: `.github/workflows/deploy.yml`
-
-**完整配置內容**:
+### 2. 部署工作流程設定 (.github/workflows/deploy.yml)
 ```yaml
 name: Deploy Flutter Web to GitHub Pages
 
@@ -155,187 +68,160 @@ jobs:
       if: github.ref == 'refs/heads/main'
 ```
 
-#### 5.2 部署觸發條件與權限
-**觸發條件**：
-- 推送代碼到 `main` 分支時自動觸發並部署
-- Pull Request 到 `main` 分支時會執行建置測試（但不部署）
+## 開發與上傳流程
 
-**權限設置**：
-- `contents: read` - 讀取儲存庫內容
-- `pages: write` - 寫入 GitHub Pages
-- `id-token: write` - 寫入身份令牌（用於安全驗證）
-
-#### 5.3 自動部署步驟詳解
-1. **代碼檢出**: 使用 `actions/checkout@v3` 取得最新代碼
-2. **環境設置**: 安裝 Flutter 3.32.7 穩定版
-3. **依賴安裝**: 執行 `flutter pub get` 安裝專案依賴
-4. **Web 編譯**: 執行 `flutter build web --release` 編譯生產版本
-5. **Pages 配置**: 使用 `actions/configure-pages@v4` 配置 GitHub Pages
-6. **上傳產物**: 使用 `actions/upload-pages-artifact@v3` 上傳建置結果
-7. **執行部署**: 使用 `actions/deploy-pages@v4` 部署到 GitHub Pages
-
-#### 5.4 必需的 GitHub 設置
-
-**Step 1: 設置 Actions 權限**
-1. 進入 GitHub 儲存庫頁面
-2. 點擊 "**Settings**" 標籤
-3. 點擊左側選單的 "**Actions**" → "**General**"
-4. 在 "**Workflow permissions**" 選擇：
-   - ✅ **"Read and write permissions"**
-5. 勾選：
-   - ✅ **"Allow GitHub Actions to create and approve pull requests"**
-6. 點擊 "**Save**" 儲存設定
-
-**Step 2: 啟用 GitHub Pages**
-1. 在同一個 Settings 頁面中
-2. 點擊左側選單的 "**Pages**"
-3. 在 "**Source**" 下拉選單中選擇：
-   - ✅ **"GitHub Actions"**
-4. 設定會自動儲存
-
-#### 5.5 部署完成後的訪問
-- **主要網址**: `https://yyuchen-workspace.github.io/capacity-calculator/`
-- 每次推送到 `main` 分支後，約需要 2-5 分鐘完成自動部署
-- 部署完成後網站內容會自動更新
-
-#### 5.6 監控部署狀態
-- 進入儲存庫的 "**Actions**" 標籤
-- 查看最近的工作流程執行狀態：
-  - 🟢 **綠色勾選**: 部署成功
-  - 🔴 **紅色叉號**: 部署失敗（點擊可查看詳細錯誤日誌）
-  - 🟡 **黃色圓圈**: 正在執行中
-
-#### 5.7 部署失敗排解
-**常見錯誤及解決方法**：
-
-1. **403 Permission denied 錯誤**
-   - 確認 Actions 權限設置是否正確
-   - 檢查是否選擇 "Read and write permissions"
-
-2. **Flutter 建置失敗**
-   - 在本地測試 `flutter build web --release` 是否正常
-   - 檢查 pubspec.yaml 依賴是否有問題
-
-3. **Pages 部署失敗** 
-   - 確認 GitHub Pages 設置為 "GitHub Actions"
-   - 查看 Actions 日誌中的詳細錯誤訊息
-
-4. **網站訪問 404**
-   - 檢查 base-href 設置是否正確
-   - 確認儲存庫名稱與網址路徑一致
-
-## 開發工作流程
-
-### 6. 本地開發和測試
+### 1. 本地開發測試
 ```bash
 # 安裝依賴
 flutter pub get
 
-# 本地運行（開發模式）
+# 本地測試運行
 flutter run -d chrome
 
-# 編譯 Web 版本
+# 建置網頁版本
 flutter build web
-
-# 預覽編譯後的 Web 版本
-cd build/web
-python -m http.server 8080
-# 然後在瀏覽器訪問 http://localhost:8080
 ```
 
-### 7. 響應式設計測試
-- **電腦版測試：** 瀏覽器寬度 > 800px
-- **手機版測試：** 瀏覽器寬度 ≤ 800px
-- **建議使用 Chrome 開發者工具進行多設備測試**
-
-## 版本管理策略
-
-### 8. 分支管理建議
+### 2. 程式碼提交與推送
 ```bash
-# 主分支（穩定版本）
-main
+# 檢查 git 狀態
+git status
 
-# 開發新功能時創建分支
-git checkout -b feature/new-calculation-logic
-# 開發完成後合併
-git checkout main
-git merge feature/new-calculation-logic
+# 添加修改的檔案
+git add lib/main.dart build/
 
-# 熱修復分支
-git checkout -b hotfix/fix-unit-display
+# 創建提交
+git commit -m "描述修改內容
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+
+# 推送到 GitHub
+git push origin main
 ```
 
-### 9. 標籤管理（版本發布）
-```bash
-# 創建版本標籤
-git tag -a v1.0.0 -m "版本 1.0.0：初版發布，包含完整計算功能和響應式設計"
+### 3. 自動部署流程
+1. **觸發條件**: 推送到 `main` 分支時自動觸發
+2. **環境設置**: Ubuntu 最新版本，Flutter 3.32.7 穩定版
+3. **建置過程**: 
+   - 檢出程式碼
+   - 設定 Flutter 環境
+   - 安裝依賴套件
+   - 建置 Web 版本
+4. **部署過程**:
+   - 設定 GitHub Pages
+   - 上傳建置產物
+   - 部署到 GitHub Pages
 
-# 推送標籤到 GitHub
-git push origin v1.0.0
+### 4. GitHub Pages 設定
+1. 進入 Repository Settings
+2. 找到 Pages 設定
+3. Source 選擇 "GitHub Actions"
+4. 確認部署完成後可透過 URL 存取
 
-# 查看所有標籤
-git tag -l
-```
+## 部署後存取
+- **網站 URL**: `https://yyuchen-workspace.github.io/capacity-calculator/`
+- **自動更新**: 每次推送到 main 分支都會自動重新部署
+
+## GitHub Actions 權限設定
+
+### 必需的權限設定
+1. **進入 Repository Settings**
+2. **Actions → General**
+3. **Workflow permissions** 設定為:
+   - ✅ "Read and write permissions"
+   - ✅ "Allow GitHub Actions to create and approve pull requests"
+
+### GitHub Pages 設定
+1. **Settings → Pages**
+2. **Source** 選擇: "GitHub Actions"
+
+## 監控部署狀態
+- **Actions 頁面**: 查看工作流程執行狀態
+  - 🟢 綠色: 部署成功
+  - 🔴 紅色: 部署失敗
+  - 🟡 黃色: 執行中
 
 ## 故障排除
 
-### 10. 常見問題解決
+### 常見問題與解決方案
 
-#### 10.1 推送被拒絕
+#### 1. 權限錯誤 (403 Permission denied)
+- 檢查 Actions 權限設定
+- 確認選擇 "Read and write permissions"
+
+#### 2. 建置失敗
 ```bash
-# 如果遠程有更新，先拉取再推送
-git pull origin main
-git push
+# 本地測試建置
+flutter build web --release
+
+# 檢查依賴
+flutter pub get
+flutter doctor
 ```
 
-#### 10.2 合併衝突
+#### 3. 部署失敗
+- 確認 GitHub Pages 設定為 "GitHub Actions"
+- 檢查 base-href 設定是否正確
+- 查看 Actions 日誌詳細錯誤
+
+#### 4. 網站 404 錯誤
+- 檢查 Repository 名稱與 base-href 是否一致
+- 確認 build/web 目錄內容正確
+
+## 開發最佳實踐
+
+### 1. 提交前檢查
 ```bash
-# 解決衝突後
-git add .
-git commit -m "解決合併衝突"
-git push
+# 本地測試
+flutter run -d chrome
+
+# 建置測試
+flutter build web
+
+# 檢查語法
+flutter analyze
 ```
 
-#### 10.3 GitHub Pages 部署失敗
-**常見錯誤：Permission denied (403)**
-1. 檢查 Actions 權限設定：
-   - Settings → Actions → General → Workflow permissions
-   - 選擇 "Read and write permissions"
-   - 勾選 "Allow GitHub Actions to create and approve pull requests"
+### 2. 提交訊息格式
+```bash
+# 功能更新
+git commit -m "Update UI layout and button positioning
 
-2. 檢查 Pages 設定：
-   - Settings → Pages → Source: "GitHub Actions"
+- Increase button spacing to 45px
+- Improve purple card height and content centering
+- Add responsive design for mobile and desktop
 
-3. 其他檢查項目：
-   - 確認 `flutter build web` 命令可在本地成功執行
-   - 檢查 `.github/workflows/deploy.yml` 配置是否正確
-   - 查看 Actions 標籤中的詳細部署日誌
+🤖 Generated with [Claude Code](https://claude.ai/code)
 
-## 專案維護
+Co-Authored-By: Claude <noreply@anthropic.com>"
+```
 
-### 11. 定期維護建議
-- **每月更新 Flutter 依賴：** `flutter pub upgrade`
-- **定期備份重要分支**
-- **保持提交歷史清晰**
-- **定期清理無用分支**
+### 3. 分支管理
+```bash
+# 功能開發分支
+git checkout -b feature/ui-improvements
 
-### 12. 協作開發
-如需多人協作開發：
-1. 設置分支保護規則
-2. 要求 Pull Request 審查
-3. 使用 Issues 追蹤功能需求和 Bug
-4. 建立 Code Review 流程
+# 完成後合併
+git checkout main
+git merge feature/ui-improvements
+```
 
-## 總結
+## 版本發布
 
-本文檔涵蓋了從初始上傳到日常維護的完整 GitHub 工作流程。遵循這些步驟可以確保專案代碼的安全管理和持續部署。
+### 創建版本標籤
+```bash
+# 創建標籤
+git tag -a v1.0.0 -m "Release v1.0.0: Initial complete version"
 
-**重要提醒：**
-- 定期提交代碼，避免丟失工作
-- 使用描述性的提交訊息
-- 在推送前測試功能是否正常
-- 保持代碼庫的整潔和組織性
+# 推送標籤
+git push origin v1.0.0
+```
 
----
-*文檔創建時間：2025-08-08*  
-*最後更新：2025-08-08*
+## 注意事項
+1. **base-href 設定**: 必須與 Repository 名稱一致
+2. **Flutter 版本**: 建議與本地開發環境版本一致
+3. **權限設定**: 確保 workflow 有正確的權限
+4. **分支保護**: 只有 main 分支推送會觸發部署
+5. **建置快取**: Actions 會自動快取 Flutter 和依賴套件
